@@ -200,7 +200,30 @@ export default class ReGqlComposer {
                 let doc = await this.db.findOne(type, args)
                 return doc
             }
+        }
 
+        this.queryType[`${camelCase(type.name)}Count`] = {
+            type: new GraphQLObjectType({
+                name: `${camelCase(type.name)}Count`,
+                fields: {
+                    count: {
+                        type: GraphQLInt
+                    }
+                }
+            }),
+            args: {
+                // limit: {
+                //     type: GraphQLInt,
+                //     description: `limits ${type.name} results`
+                // }
+            },
+            description: `count ${pluralize(type.name)}`,
+            resolve: async (source, args, context, info) =>{
+                // console.log({source, args, context, info})
+                //Todo add args
+                let doc = await this.db.count(type, args)
+                return doc
+            }
         }
     }
 

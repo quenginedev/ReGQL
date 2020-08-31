@@ -82,7 +82,10 @@ export interface IReGqlDBDriver {
     models: {
         [model_name: string] : Model<any>
     }
+
     createModel: (definition: IReGqlDefinition) => any
+
+    count : (gqlType: GraphQLObjectType, args: any) => any
     findOne : (gqlType: GraphQLObjectType, args: any) => any
 }
 

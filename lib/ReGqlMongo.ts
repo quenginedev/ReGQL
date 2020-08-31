@@ -75,7 +75,13 @@ export default class ReGqlMongo implements IReGqlDBDriver {
     async findOne(gqlType: GraphQLObjectType, args: any){
         console.log('Querying', this.models[gqlType.name])
         let pipeline = []
+        // create a lookup aggregator that looks for relations and nested relations
+        // match where field
+        // sort field in ascending or descending order
+        // limit values
+
         pipeline.push({ $match : {} })
+        pipeline.push({ $sort: { "address.street.name" : 1 } })
         if (args.limit)
             pipeline.push({ $limit : args.limit })
 
@@ -83,6 +89,14 @@ export default class ReGqlMongo implements IReGqlDBDriver {
         let query = await this.models[gqlType.name].aggregate(pipeline)
         console.log(Date.now() - startTime, 'ms')
         return query
+    }
+
+    async count (gqlType: GraphQLObjectType, args: any){
+        let pipeline = []
+        pipeline.push({ $match : {} })
+        pipeline.push({$count: "count" })
+        let query = await this.models[gqlType.name].aggregate(pipeline)
+        return query[0]
     }
 
 }
